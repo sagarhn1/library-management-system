@@ -13,21 +13,29 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "books")
+@Table(
+        name = "books",
+        indexes = {
+                @Index(name = "idx_book_isbn", columnList = "isbn"),
+                @Index(name = "idx_book_title", columnList = "title")
+        }
+)
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @NotBlank(message = "ISBN is mandatory")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length=20)
     private String isbn;
 
     @NotBlank(message = "Book title is mandatory")
@@ -52,7 +60,7 @@ public class Book {
     private String language;
 
     @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @NotNull(message = "Total copies is mandatory")
