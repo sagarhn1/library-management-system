@@ -1,5 +1,7 @@
 package com.sagar.book.payload.response;
 
+import com.sagar.book.model.BookAccessType;
+import com.sagar.book.model.UserBookAction;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -34,11 +36,29 @@ public class BookResponse {
 
     private String description;
 
-    private Integer totalCopies;
+    /**
+     * FREE or PAID
+     */
+    private BookAccessType accessType;
 
-    private Integer availableCopies;
-
+    /**
+     * Price of the book.
+     * FREE books have zero price.
+     */
     private BigDecimal price;
+
+    /**
+     * Number of days the user can access the book
+     * after access is granted.
+     */
+    private Integer accessDurationDays;
+
+    /**
+     * Public book cover image.
+     */
+    private String coverImageUrl;
+
+    private UserBookAction userBookAction;
 
     private Boolean active;
 

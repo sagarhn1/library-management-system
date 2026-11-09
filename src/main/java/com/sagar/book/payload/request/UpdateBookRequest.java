@@ -1,5 +1,6 @@
 package com.sagar.book.payload.request;
 
+import com.sagar.book.model.BookAccessType;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -30,22 +31,51 @@ public class UpdateBookRequest {
 
     private LocalDate publishDate;
 
+    @NotBlank(message = "Language is required")
     private String language;
 
     private String description;
 
-    @NotNull(message = "Total copies is required")
-    @Min(value = 1, message = "Total copies must be at least 1")
-    private Integer totalCopies;
+    @NotNull(message = "Access type is required")
+    private BookAccessType accessType;
 
-    @NotNull(message = "Available copies is required")
-    @Min(value = 0, message = "Available copies cannot be negative")
-    private Integer availableCopies;
-
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    @DecimalMin(
+            value = "0.0",
+            inclusive = true,
+            message = "Price cannot be negative"
+    )
     private BigDecimal price;
+
+    @NotNull(message = "Access duration is required")
+    @Min(
+            value = 1,
+            message = "Access duration must be at least 1 day"
+    )
+    private Integer accessDurationDays;
 
     @NotNull(message = "Active status is required")
     private Boolean active;
+
+    /**
+     * FREE books must have zero price.
+     * PAID books must have a price greater than zero.
+     */
+    @AssertTrue(
+            message = "FREE books must have zero price and "
+                    + "PAID books must have a price greater than zero"
+    )
+    public boolean isPriceValid() {
+
+        if (accessType == null) {
+            return true;
+        }
+
+        if (accessType == BookAccessType.FREE) {
+            return price == null
+                    || price.compareTo(BigDecimal.ZERO) == 0;
+        }
+
+        return price != null
+                && price.compareTo(BigDecimal.ZERO) > 0;
+    }
 }

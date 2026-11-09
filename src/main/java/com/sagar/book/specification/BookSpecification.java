@@ -16,30 +16,31 @@ public class BookSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            // Keyword Search (Title or ISBN)
-
+            // Keyword Search
             if (request.getKeyword() != null &&
                     !request.getKeyword().trim().isEmpty()) {
+
+                String keyword =
+                        request.getKeyword().trim().toLowerCase();
 
                 Predicate titlePredicate =
                         criteriaBuilder.like(
                                 criteriaBuilder.lower(root.get("title")),
-                                "%" + request.getKeyword().toLowerCase() + "%"
+                                "%" + keyword + "%"
                         );
 
                 Predicate isbnPredicate =
                         criteriaBuilder.like(
                                 criteriaBuilder.lower(root.get("isbn")),
-                                "%" + request.getKeyword().toLowerCase() + "%"
+                                "%" + keyword + "%"
                         );
 
                 predicates.add(
-                        criteriaBuilder.or(titlePredicate, isbnPredicate)
+                        criteriaBuilder.or(titlePredicate, isbnPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("name")), "%" + keyword + "%"), criteriaBuilder.like(criteriaBuilder.lower(root.get("genre").get("name")), "%" + keyword + "%"))
                 );
             }
 
             // Author
-
             if (request.getAuthorId() != null) {
 
                 predicates.add(
@@ -51,7 +52,6 @@ public class BookSpecification {
             }
 
             // Genre
-
             if (request.getGenreId() != null) {
 
                 predicates.add(
@@ -63,7 +63,6 @@ public class BookSpecification {
             }
 
             // Publisher
-
             if (request.getPublisherId() != null) {
 
                 predicates.add(
@@ -75,20 +74,33 @@ public class BookSpecification {
             }
 
             // Language
-
             if (request.getLanguage() != null &&
                     !request.getLanguage().isBlank()) {
 
                 predicates.add(
                         criteriaBuilder.equal(
-                                criteriaBuilder.lower(root.get("language")),
-                                request.getLanguage().toLowerCase()
+                                criteriaBuilder.lower(
+                                        root.get("language")
+                                ),
+                                request.getLanguage()
+                                        .trim()
+                                        .toLowerCase()
+                        )
+                );
+            }
+
+            // FREE or PAID
+            if (request.getAccessType() != null) {
+
+                predicates.add(
+                        criteriaBuilder.equal(
+                                root.get("accessType"),
+                                request.getAccessType()
                         )
                 );
             }
 
             // Active
-
             if (request.getActive() != null) {
 
                 predicates.add(
@@ -100,7 +112,6 @@ public class BookSpecification {
             }
 
             // Minimum Price
-
             if (request.getMinPrice() != null) {
 
                 predicates.add(
@@ -112,7 +123,6 @@ public class BookSpecification {
             }
 
             // Maximum Price
-
             if (request.getMaxPrice() != null) {
 
                 predicates.add(

@@ -1,5 +1,6 @@
 package com.sagar.book.payload.request;
 
+import com.sagar.book.model.BookAccessType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,6 +21,11 @@ public class BookSearchRequest {
     private Long publisherId;
 
     private String language;
+
+    /**
+     * FREE or PAID book filter.
+     */
+    private BookAccessType accessType;
 
     private Boolean active;
 

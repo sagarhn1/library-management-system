@@ -7,6 +7,7 @@ import com.sagar.genre.service.GenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,46 +19,91 @@ public class GenreController {
 
     private final GenreService genreService;
 
+    /**
+     * Creates a new genre.
+     *
+     * Only ADMIN and LIBRARIAN can create genres.
+     */
     @PostMapping
-    public ResponseEntity<GenreResponse> addGenre(@Valid @RequestBody CreateGenreRequest createGenreRequest){
-        GenreResponse createdGenre=genreService.createGenre(createGenreRequest);
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+    public ResponseEntity<GenreResponse> addGenre(
+            @Valid @RequestBody CreateGenreRequest createGenreRequest
+    ) {
+
+        GenreResponse createdGenre =
+                genreService.createGenre(createGenreRequest);
+
         return ResponseEntity.ok(createdGenre);
     }
 
+    /**
+     * Retrieves all genres.
+     *
+     * Accessible to all authenticated users.
+     */
     @GetMapping
-    public ResponseEntity<List<GenreResponse>> getAllGenres(){
-        return ResponseEntity.ok(genreService.getAllGenres());
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
+    public ResponseEntity<List<GenreResponse>> getAllGenres() {
+
+        return ResponseEntity.ok(
+                genreService.getAllGenres()
+        );
     }
 
+    /**
+     * Retrieves a genre by its ID.
+     */
     @GetMapping("/{genreId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<GenreResponse> getGenreById(
-            @PathVariable Long genreId) {
+            @PathVariable Long genreId
+    ) {
 
         return ResponseEntity.ok(
                 genreService.getGenreById(genreId)
         );
     }
 
+    /**
+     * Updates an existing genre.
+     *
+     * Only ADMIN and LIBRARIAN can update genres.
+     */
     @PutMapping("/{genreId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<GenreResponse> updateGenre(
             @PathVariable Long genreId,
-            @Valid @RequestBody UpdateGenreRequest request) {
+            @Valid @RequestBody UpdateGenreRequest request
+    ) {
 
         return ResponseEntity.ok(
                 genreService.updateGenre(genreId, request)
         );
     }
 
+    /**
+     * Deletes a genre.
+     *
+     * Only ADMIN can permanently delete genres.
+     */
     @DeleteMapping("/{genreId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteGenre(
-            @PathVariable Long genreId) {
+            @PathVariable Long genreId
+    ) {
 
         genreService.deleteGenre(genreId);
 
-        return ResponseEntity.ok("Genre deleted successfully");
+        return ResponseEntity.ok(
+                "Genre deleted successfully"
+        );
     }
 
+    /**
+     * Retrieves all top-level genres.
+     */
     @GetMapping("/top-level")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<GenreResponse>> getTopLevelGenres() {
 
         return ResponseEntity.ok(
@@ -65,16 +111,25 @@ public class GenreController {
         );
     }
 
+    /**
+     * Retrieves all subgenres of a parent genre.
+     */
     @GetMapping("/{parentGenreId}/subgenres")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<GenreResponse>> getSubGenres(
-            @PathVariable Long parentGenreId) {
+            @PathVariable Long parentGenreId
+    ) {
 
         return ResponseEntity.ok(
                 genreService.getSubGenres(parentGenreId)
         );
     }
 
+    /**
+     * Retrieves all active genres.
+     */
     @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<GenreResponse>> getAllActiveGenres() {
 
         return ResponseEntity.ok(
@@ -82,21 +137,39 @@ public class GenreController {
         );
     }
 
+    /**
+     * Deactivates a genre.
+     *
+     * Only ADMIN and LIBRARIAN can change genre status.
+     */
     @PatchMapping("/{genreId}/deactivate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<String> deactivateGenre(
-            @PathVariable Long genreId) {
+            @PathVariable Long genreId
+    ) {
 
         genreService.deactivateGenre(genreId);
 
-        return ResponseEntity.ok("Genre deactivated successfully");
+        return ResponseEntity.ok(
+                "Genre deactivated successfully"
+        );
     }
 
+    /**
+     * Activates a genre.
+     *
+     * Only ADMIN and LIBRARIAN can change genre status.
+     */
     @PatchMapping("/{genreId}/activate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<String> activateGenre(
-            @PathVariable Long genreId) {
+            @PathVariable Long genreId
+    ) {
 
         genreService.activateGenre(genreId);
 
-        return ResponseEntity.ok("Genre activated successfully");
+        return ResponseEntity.ok(
+                "Genre activated successfully"
+        );
     }
 }

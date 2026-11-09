@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Payment Test</title>
+</head>
+
+<body>
+
+<h2>Razorpay Payment Test</h2>
+
+<label>JWT Token:</label>
+<br>
+<textarea
+        id="token"
+        rows="5"
+        cols="80"
+        placeholder="Paste MEMBER JWT token here"
+></textarea>
+
+<br><br>
+
+<label>Book ID:</label>
+<input
+        type="number"
+        id="bookId"
+        value="1"
+>
+
+<br><br>
+
+<button onclick="startPayment()">
+    Buy Book
+</button>
+
+<p id="message"></p>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+    const BASE_URL = "http://localhost:8080";
+
+    async function startPayment() {
+
+        const token = document
+            .getElementById("token")
+            .value
+            .trim();
+
+        const bookId = document
+            .getElementById("bookId")
+            .value;
+
+        if (!token) {
+
+            showMessage(
+                "Please enter your JWT token"
+            );
+
+            return;
+        }
+
+        try {
+
+            // Step 1: Create payment order.
+            const createResponse =
+                await fetch(
+                    `${BASE_URL}/api/payments/create`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            bookId: Number(bookId)
+                        })
+                    }
+                );
+
+            if (!createResponse.ok) {
+
+                const error =
+                    await createResponse.text();
+
+                throw new Error(error);
+            }
+
+            const payment =
+                await createResponse.json();
+
+            // Step 2: Open Razorpay Checkout.
+            const options = {
+
+                key: payment.razorpayKeyId,
+
+                amount:
+                    Math.round(
+                        payment.amount * 100
+                    ),
+
+                currency:
+                    payment.currency,
+
+                name:
+                    "Library Management System",
+
+                description:
+                    payment.bookTitle,
+
+                order_id:
+                    payment.razorpayOrderId,
+
+                handler:
+                    async function (response) {
+
+                        try {
+
+                            // Step 3: Verify payment.
+                            const verifyResponse =
+                                await fetch(
+                                    `${BASE_URL}/api/payments/verify`,
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json",
+
+                                            "Authorization":
+                                                `Bearer ${token}`
+                                        },
+
+                                        body:
+                                            JSON.stringify({
+
+                                                razorpayPaymentId:
+                                                    response
+                                                        .razorpay_payment_id,
+
+                                                razorpayOrderId:
+                                                    response
+                                                        .razorpay_order_id,
+
+                                                razorpaySignature:
+                                                    response
+                                                        .razorpay_signature
+                                            })
+                                    }
+                                );
+
+                            const result =
+                                await verifyResponse.text();
+
+                            if (!verifyResponse.ok) {
+
+                                throw new Error(
+                                    result
+                                );
+                            }
+
+                            showMessage(
+                                "SUCCESS: " + result
+                            );
+
+                        } catch (error) {
+
+                            showMessage(
+                                "Verification failed: "
+                                + error.message
+                            );
+                        }
+                    },
+
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+
+            const razorpay =
+                new Razorpay(options);
+
+            razorpay.open();
+
+        } catch (error) {
+
+            showMessage(
+                "Payment failed: "
+                + error.message
+            );
+        }
+    }
+
+
+    function showMessage(message) {
+
+        document
+            .getElementById("message")
+            .innerText = message;
+    }
+
+</script>
+
+</body>
+</html>

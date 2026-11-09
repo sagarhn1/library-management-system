@@ -7,6 +7,7 @@ import com.sagar.publisher.service.PublisherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +20,10 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<PublisherResponse> createPublisher(
-            @Valid @RequestBody CreatePublisherRequest request) {
+            @Valid @RequestBody CreatePublisherRequest request
+    ) {
 
         return ResponseEntity.ok(
                 publisherService.createPublisher(request)
@@ -28,6 +31,7 @@ public class PublisherController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<PublisherResponse>> getAllPublishers() {
 
         return ResponseEntity.ok(
@@ -36,8 +40,10 @@ public class PublisherController {
     }
 
     @GetMapping("/{publisherId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<PublisherResponse> getPublisherById(
-            @PathVariable Long publisherId) {
+            @PathVariable Long publisherId
+    ) {
 
         return ResponseEntity.ok(
                 publisherService.getPublisherById(publisherId)
@@ -45,9 +51,11 @@ public class PublisherController {
     }
 
     @PutMapping("/{publisherId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<PublisherResponse> updatePublisher(
             @PathVariable Long publisherId,
-            @Valid @RequestBody UpdatePublisherRequest request) {
+            @Valid @RequestBody UpdatePublisherRequest request
+    ) {
 
         return ResponseEntity.ok(
                 publisherService.updatePublisher(
@@ -58,8 +66,10 @@ public class PublisherController {
     }
 
     @DeleteMapping("/{publisherId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deletePublisher(
-            @PathVariable Long publisherId) {
+            @PathVariable Long publisherId
+    ) {
 
         publisherService.deletePublisher(publisherId);
 
@@ -69,8 +79,10 @@ public class PublisherController {
     }
 
     @PatchMapping("/{publisherId}/activate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<String> activatePublisher(
-            @PathVariable Long publisherId) {
+            @PathVariable Long publisherId
+    ) {
 
         publisherService.activatePublisher(publisherId);
 
@@ -80,8 +92,10 @@ public class PublisherController {
     }
 
     @PatchMapping("/{publisherId}/deactivate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ResponseEntity<String> deactivatePublisher(
-            @PathVariable Long publisherId) {
+            @PathVariable Long publisherId
+    ) {
 
         publisherService.deactivatePublisher(publisherId);
 
@@ -91,6 +105,7 @@ public class PublisherController {
     }
 
     @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<PublisherResponse>> getAllActivePublishers() {
 
         return ResponseEntity.ok(

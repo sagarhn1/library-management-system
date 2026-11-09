@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookMapper {
 
-    public Book toEntity(CreateBookRequest request,
-                         Author author,
-                         Genre genre,
-                         Publisher publisher) {
+    public Book toEntity(
+            CreateBookRequest request,
+            Author author,
+            Genre genre,
+            Publisher publisher
+    ) {
 
         return Book.builder()
                 .isbn(request.getIsbn())
@@ -26,17 +28,19 @@ public class BookMapper {
                 .publishDate(request.getPublishDate())
                 .language(request.getLanguage())
                 .description(request.getDescription())
-                .totalCopies(request.getTotalCopies())
-                .availableCopies(request.getAvailableCopies())
+                .accessType(request.getAccessType())
                 .price(request.getPrice())
+                .accessDurationDays(request.getAccessDurationDays())
                 .build();
     }
 
-    public void updateEntity(Book book,
-                             UpdateBookRequest request,
-                             Author author,
-                             Genre genre,
-                             Publisher publisher) {
+    public void updateEntity(
+            Book book,
+            UpdateBookRequest request,
+            Author author,
+            Genre genre,
+            Publisher publisher
+    ) {
 
         book.setIsbn(request.getIsbn());
         book.setTitle(request.getTitle());
@@ -46,9 +50,13 @@ public class BookMapper {
         book.setPublishDate(request.getPublishDate());
         book.setLanguage(request.getLanguage());
         book.setDescription(request.getDescription());
-        book.setTotalCopies(request.getTotalCopies());
-        book.setAvailableCopies(request.getAvailableCopies());
+
+        book.setAccessType(request.getAccessType());
         book.setPrice(request.getPrice());
+        book.setAccessDurationDays(
+                request.getAccessDurationDays()
+        );
+
         book.setActive(request.getActive());
     }
 
@@ -71,9 +79,18 @@ public class BookMapper {
                 .publishDate(book.getPublishDate())
                 .language(book.getLanguage())
                 .description(book.getDescription())
-                .totalCopies(book.getTotalCopies())
-                .availableCopies(book.getAvailableCopies())
+
+                .accessType(book.getAccessType())
                 .price(book.getPrice())
+                .accessDurationDays(
+                        book.getAccessDurationDays()
+                )
+                .coverImageUrl(
+                        book.getCoverImagePath() != null
+                                ? "/api/books/" + book.getId() + "/cover"
+                                : null
+                )
+
                 .active(book.getActive())
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
