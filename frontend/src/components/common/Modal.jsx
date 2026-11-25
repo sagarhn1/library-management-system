@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { IconX } from './Icons'
 
 export function Modal({ isOpen, onClose, title, children, size = '' }) {
   const overlayRef = useRef(null)
@@ -40,7 +41,7 @@ export function Modal({ isOpen, onClose, title, children, size = '' }) {
             aria-label="Close"
             type="button"
           >
-            ✕
+            <IconX size={18} />
           </button>
         </div>
         {children}

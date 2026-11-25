@@ -3,7 +3,7 @@ import { useAuth } from '../auth/useAuth'
 import { navigate } from '../app/router'
 import { Alert } from '../components/common/Alert'
 import { Spinner } from '../components/common/Spinner'
-import { IconBookOpen } from '../components/common/Icons'
+import { BrandLogo } from '../components/common/Icons'
 
 const initialForm = {
   firstName: '',
@@ -42,13 +42,20 @@ export function RegisterPage() {
       <div className="auth-card wide">
         <div className="auth-logo">
           <div className="auth-logo-icon">
-            <IconBookOpen size={20} />
+            <BrandLogo size={20} />
           </div>
-          <span className="auth-logo-text">E-Library</span>
+          <div>
+            <span className="auth-logo-text">
+              Vellum<sup className="brand-tm">®</sup>
+            </span>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>
+              Executive Digital Library
+            </div>
+          </div>
         </div>
 
-        <h1 className="auth-title">Create your account</h1>
-        <p className="auth-subtitle">Join E-Library and start reading today</p>
+        <h1 className="auth-title">Create your Vellum® account</h1>
+        <p className="auth-subtitle">Start reading curated digital publications today</p>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           {error && <Alert type="error">{error}</Alert>}

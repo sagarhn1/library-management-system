@@ -47,13 +47,14 @@ export function MyLibraryPage() {
 
   return (
     <div className="page-content fade-in">
-      <div className="page-header">
-        <div className="page-header-text">
+      <div className="hero-banner library-hero-banner">
+        <div className="hero-banner-content">
+          <span className="hero-eyebrow">Personal Reading Shelf</span>
           <h1>My Library</h1>
-          <p>Books you currently have access to read</p>
+          <p>Active publications and licensed titles ready for immediate reading</p>
         </div>
         <button
-          className="btn btn-outline"
+          className="btn btn-hero-light"
           onClick={() => navigate('/catalog')}
           type="button"
         >

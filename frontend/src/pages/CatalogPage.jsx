@@ -115,13 +115,14 @@ export function CatalogPage() {
 
   return (
     <div className="page-content fade-in">
-      <div className="page-header catalog-hero-header">
-        <div className="page-header-text">
-          <h1>Browse Books</h1>
+      <div className="hero-banner catalog-hero-banner">
+        <div className="hero-banner-content">
+          <span className="hero-eyebrow">Vellum® Curated Collection</span>
+          <h1>Enterprise Knowledge Catalog</h1>
           <p>
             {totalElements > 0
-              ? `Showing ${totalElements.toLocaleString()} books across all genres and authors`
-              : 'Explore and discover books in our extensive digital library'}
+              ? `Explore ${totalElements.toLocaleString()} curated publications across engineering, business, and research`
+              : 'Explore and discover curated books across our digital library'}
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@ package com.sagar.auth.service;
 
 import com.sagar.auth.payload.*;
 import com.sagar.auth.model.RefreshToken;
+import com.sagar.exception.InvalidLoginException;
 import com.sagar.security.jwt.JwtService;
 import com.sagar.user.model.User;
 import com.sagar.user.repository.UserRepository;
@@ -9,6 +10,7 @@ import com.sagar.user.payload.UserResponse;
 import com.sagar.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -87,6 +89,7 @@ public class AuthServiceImpl implements AuthService {
         return generateTokens(user);
     }
 
+
     /**
      * Authenticates a local user using email and password.
      *
@@ -98,16 +101,24 @@ public class AuthServiceImpl implements AuthService {
     public TokenResponse login(LoginRequest request) {
 
         /*
-         * AuthenticationManager delegates credential validation to
-         * Spring Security's configured authentication provider.
+         * Delegate credential validation to Spring Security.
+         * Translate authentication failure into an application-specific exception.
          */
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                request.getEmail(),
-                                request.getPassword()
-                        )
-                );
+        Authentication authentication;
+
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+
+        } catch (BadCredentialsException ex) {
+            throw new InvalidLoginException(
+                    "Invalid email or password"
+            );
+        }
 
         /*
          * Authentication succeeded. Retrieve the application user
@@ -124,6 +135,7 @@ public class AuthServiceImpl implements AuthService {
 
         return generateTokens(user);
     }
+
 
     /**
      * Generates a new access token using a valid refresh token.

@@ -3,7 +3,7 @@ import { useAuth } from '../auth/useAuth'
 import { navigate } from '../app/router'
 import { Alert } from '../components/common/Alert'
 import { Spinner } from '../components/common/Spinner'
-import { IconBookOpen } from '../components/common/Icons'
+import { BrandLogo } from '../components/common/Icons'
 
 export function LoginPage() {
   const { login } = useAuth()
@@ -34,20 +34,27 @@ export function LoginPage() {
       <div className="auth-card">
         <div className="auth-logo">
           <div className="auth-logo-icon">
-            <IconBookOpen size={20} />
+            <BrandLogo size={20} />
           </div>
-          <span className="auth-logo-text">E-Library</span>
+          <div>
+            <span className="auth-logo-text">
+              Vellum<sup className="brand-tm">®</sup>
+            </span>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>
+              Executive Digital Library
+            </div>
+          </div>
         </div>
 
-        <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-subtitle">Sign in to your account to continue</p>
+        <h1 className="auth-title">Sign in to your workspace</h1>
+        <p className="auth-subtitle">Access curated publications, research, and your personal shelf</p>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           {error && <Alert type="error">{error}</Alert>}
 
           <div className="field">
             <label className="field-label" htmlFor="email">
-              Email address <span className="required">*</span>
+              Work or personal email <span className="required">*</span>
             </label>
             <input
               id="email"
@@ -87,7 +94,7 @@ export function LoginPage() {
           >
             {submitting ? (
               <>
-                <Spinner /> Signing in…
+                <Spinner /> Authenticating…
               </>
             ) : (
               'Sign in'
@@ -96,13 +103,13 @@ export function LoginPage() {
         </form>
 
         <div className="auth-footer">
-          Don&apos;t have an account?{' '}
+          New to Vellum®?{' '}
           <button
             type="button"
             className="auth-link"
             onClick={() => navigate('/register')}
           >
-            Create account
+            Create an account
           </button>
         </div>
       </div>

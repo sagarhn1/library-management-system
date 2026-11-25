@@ -28,7 +28,7 @@ function loadRazorpay() {
 const ACTION_LABELS = {
   READ: { label: 'Read Now', icon: IconBookOpen, cls: 'btn-primary' },
   GET_FREE: { label: 'Get Free Access', icon: IconSparkles, cls: 'btn-success' },
-  BUY: { label: 'Purchase Access', icon: IconCreditCard, cls: 'btn-primary', style: { background: '#6366f1', borderColor: '#6366f1' } },
+  BUY: { label: 'Purchase Access', icon: IconCreditCard, cls: 'btn-accent' },
   EXPIRED: { label: 'Renew Access', icon: IconRotateCw, cls: 'btn-outline' },
 }
 
@@ -106,7 +106,7 @@ export function BookDetailPage() {
       amount: paymentData.amount * 100,
       currency: paymentData.currency || 'INR',
       order_id: paymentData.razorpayOrderId,
-      name: 'E-Library',
+      name: 'Vellum®',
       description: paymentData.bookTitle,
       handler: async function (response) {
         setActing(true)

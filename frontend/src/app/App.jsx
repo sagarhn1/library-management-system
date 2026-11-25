@@ -16,13 +16,16 @@ import { ManageGenresPage } from '../pages/ManageGenresPage'
 import { ManagePublishersPage } from '../pages/ManagePublishersPage'
 import { ManageUsersPage } from '../pages/ManageUsersPage'
 import { matchRoute, navigate, useRouter } from './router'
+import { IconSearch } from '../components/common/Icons'
 import '../App.css'
 
 function NotFound() {
   return (
-    <div className="page-content">
+    <div className="page-content fade-in">
       <div style={{ textAlign: 'center', padding: '64px 0' }}>
-        <div style={{ fontSize: 64, marginBottom: 16 }}>🔍</div>
+        <div style={{ color: 'var(--gray-400)', marginBottom: 16, display: 'inline-flex' }}>
+          <IconSearch size={48} />
+        </div>
         <h1>Page not found</h1>
         <p style={{ color: 'var(--text-muted)', marginTop: 8 }}>
           The page you are looking for does not exist.

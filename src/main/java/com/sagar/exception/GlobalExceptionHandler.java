@@ -94,6 +94,20 @@ public class GlobalExceptionHandler {
                         request));
     }
 
+    @ExceptionHandler(InvalidLoginException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidLogin(
+            InvalidLoginException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(buildErrorResponse(
+                        HttpStatus.UNAUTHORIZED,
+                        ex.getMessage(),
+                        null,
+                        request
+                ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(
             Exception ex,
@@ -106,6 +120,7 @@ public class GlobalExceptionHandler {
                         List.of(ex.getMessage()),
                         request));
     }
+
 
     /**
      * Builds a consistent API error response.

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../../auth/useAuth'
 import { navigate, useRouter } from '../../app/router'
 import { Spinner } from '../common/Spinner'
-import { IconBookOpen, IconLogOut, IconShield } from '../common/Icons'
+import { BrandLogo, IconLogOut, IconShield } from '../common/Icons'
 
 export function AppShell({ children }) {
   const { user, logout, hasRole } = useAuth()
@@ -33,9 +33,11 @@ export function AppShell({ children }) {
           onClick={() => navigate('/catalog')}
         >
           <span className="topbar-brand-icon">
-            <IconBookOpen size={20} />
+            <BrandLogo size={18} />
           </span>
-          <span>E-Library</span>
+          <span className="brand-wordmark">
+            Vellum<sup className="brand-tm">®</sup>
+          </span>
         </button>
 
         <nav className="topbar-nav">
@@ -53,13 +55,13 @@ export function AppShell({ children }) {
           >
             My Library
           </button>
-          {hasRole('ADMIN') && (
+          {hasRole('ADMIN', 'LIBRARIAN') && (
             <button
               type="button"
               className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
               onClick={() => navigate('/admin')}
             >
-              Admin
+              Console
             </button>
           )}
         </nav>
@@ -68,7 +70,7 @@ export function AppShell({ children }) {
           <div className="user-profile-container">
             <div
               className="user-profile-avatar"
-              title={user?.role === 'ADMIN' ? `Admin Account (${user?.email})` : 'Account'}
+              title={user?.role === 'ADMIN' ? 'Administrator Account' : 'Member Account'}
             >
               <span className="avatar-letter">{initial}</span>
             </div>
@@ -92,7 +94,7 @@ export function AppShell({ children }) {
             ) : (
               <>
                 <IconLogOut size={15} style={{ marginRight: 6 }} />
-                <span>Logout</span>
+                <span>Sign out</span>
               </>
             )}
           </button>

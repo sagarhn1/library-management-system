@@ -18,8 +18,7 @@ const ACTION_CONFIG = {
   BUY: {
     label: 'Purchase',
     icon: IconCreditCard,
-    cls: 'btn-primary',
-    style: { background: '#6366f1', borderColor: '#6366f1' },
+    cls: 'btn-accent',
   },
   EXPIRED: {
     label: 'Renew',
